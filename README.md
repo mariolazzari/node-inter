@@ -343,3 +343,171 @@ test();
 
 let number = 40;
 ```
+
+### Let, var and const
+
+```js
+let number = 11;
+
+function test() {
+  console.log(number); //ReferenceError
+  let number = 40;
+}
+
+test();
+
+var number = 11;
+
+function test() {
+  console.log(number); //undefined
+  var number = 40;
+}
+
+test();
+
+let number = 11;
+
+function test() {
+  console.log(number); //undefined
+  var number = 40;
+}
+
+test();
+
+middle_name = "John";
+console.log(middle_name); //John
+var middle_name;
+```
+
+### Anonynous vs named functions
+
+```js
+test(); //TypeError: test is not a function
+
+var test = function () {
+  console.log("Hello");
+};
+
+test(); //Hello
+
+function test() {
+  console.log("Hello");
+}
+```
+
+### Closure
+
+A closure is created when a function remembers and accesses variables from its outer (lexical) scope, even after the outer function has finished executing.
+
+```js
+function message() {
+  let msg = "Friday is going to be rainy";
+  let type = {
+    radio: "radio message",
+    tv: "TV message",
+  };
+
+  function date() {
+    return new Date().toString();
+  }
+
+  function weatherForecast() {
+    console.log(msg);
+    console.log(type.radio);
+    console.log(date());
+  }
+
+  return weatherForecast;
+}
+
+let weather = message();
+weather();
+```
+
+### Code review
+
+```js
+function counterVar() {
+  for (var i = 1; i <= 3; i++) {
+    console.log(`VAR - i is ${i} outside of setTimeout`);
+    setTimeout(function () {
+      console.log("VAR", i);
+    }, i * 1000);
+  }
+}
+
+function counterLet() {
+  for (let i = 1; i <= 3; i++) {
+    console.log(`LET - i is ${i} outside of setTimeout`);
+    setTimeout(function () {
+      console.log("LET", i);
+    }, i * 1000);
+  }
+}
+
+counterVar();
+counterLet();
+```
+
+### Express part 1
+
+```sh
+pnpm init
+pnpm add express
+pnpm start
+```
+
+```js
+const express = require("express");
+const app = express();
+const port = 8000;
+
+// localhost:8000/
+app.get("/", (_req, res) => {
+  res.send("Hi from an Express app");
+});
+
+app.listen(port, () => {
+  console.log("Server is running");
+});
+```
+
+### Nodemon
+
+```js
+const express = require("express");
+
+const app = express();
+const PORT = 8080;
+
+app.get("/", (_req, res) => {
+  res.send("Ciao Mario!");
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
+```
+
+```json
+{
+  "name": "21-nodemon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "Mario Lazzari",
+  "license": "ISC",
+  "packageManager": "pnpm@10.26.2",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
+```
