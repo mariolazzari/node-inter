@@ -181,5 +181,165 @@ arrowFunc();
 ### This part 3
 
 ```js
+const student = {
+  name: "Mario",
+  siblings: ["Luigi", "Peach", "Yoshi"],
 
+  showSiblings: () => {
+    console.log(this.name);
+  },
+};
+```
+
+### Bind method
+
+```js
+const dog = {
+  name: "Buddy",
+
+  bark() {
+    console.log(`${this.name} says Woof!`);
+  },
+};
+
+// It will print "undefined says Woof!" because 'this' is not bound to the dog object in this context.
+setTimeout(dog.bark, 1000);
+// Fix: Use bind to ensure 'this' refers to the dog object
+setTimeout(dog.bark.bind(dog), 1000);
+
+const student = {
+  first_name: "John",
+  talk() {
+    console.log(this.first_name, "talks");
+  },
+};
+
+const teacher = {
+  first_name: "Adam",
+};
+
+const bound = student.talk.bind(teacher);
+bound(); // It will print "Adam talks" because 'this' is bound to the teacher object.
+```
+
+### Callback
+
+A callback is a function that is passed to another function as an argument and called back from that function later on.
+
+```js
+function countDown(callback) {
+  setTimeout(() => {
+    callback("Countdown finished");
+  }, 1000);
+}
+
+countDown(val => console.log(val));
+```
+
+### Var, let and const
+
+```js
+{
+  let first_name = "John";
+  const last_name = "Doe";
+  var middle_name = "smith";
+}
+
+console.log(middle_name);
+console.log(first_name); // ReferenceError: first_name is not defined;
+console.log(last_name); // ReferenceError: last_name is not defined;
+
+let x = 20;
+console.log(x); //20
+
+function test() {
+  let x = 30;
+  console.log(x); //30
+
+  if (true) {
+    let x = 40;
+    console.log(x); // 40
+  }
+  console.log(x); // 30
+}
+
+test();
+console.log(x); // 20
+```
+
+### Var
+
+```js
+var x = 20;
+console.log(x); //20
+
+function test() {
+  var x = 30;
+  console.log(x); //30
+
+  if (true) {
+    var x = 40;
+    console.log(x); //40
+  }
+  console.log(x); //40
+}
+
+test();
+console.log(x); //20
+```
+
+### Before declaration
+
+```js
+function test() {
+  console.log(number); //undefined
+  var number = 11;
+}
+
+test();
+
+function test() {
+  console.log(number); //ReferenceError
+  let number = 11;
+}
+
+test();
+
+function test() {
+  console.log(number); //33
+}
+
+var number = 33;
+test();
+
+function test() {
+  console.log(number); //33
+}
+
+let number = 33;
+test();
+
+let number = 40;
+
+function test() {
+  console.log(number); //40
+}
+
+test();
+
+function test() {
+  console.log(number); //undefined
+}
+
+test();
+
+var number = 40;
+
+function test() {
+  console.log(number); //ReferenceError
+}
+
+test();
+
+let number = 40;
 ```
