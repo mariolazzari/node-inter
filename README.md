@@ -570,3 +570,45 @@ app.listen(port, () => {
   console.log("Server is running");
 });
 ```
+
+### Wildcard
+
+```js
+const express = require("express");
+const app = express();
+const port = 5000;
+const path = require("path");
+
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
+
+app.get("/user/:user_name", (req, res) => {
+  res.send("This is backend");
+});
+
+app.get("/*", (_req, res) => {
+  res.sendStatus(404);
+});
+
+app.listen(port, () => {
+  console.log("Server is running");
+});
+```
+
+### Multi imports
+
+```js
+const number = require("./counter"); // we import counter module
+const number2 = require("./counter"); // it uses the same instance from above
+const number3 = require("./counter"); // it uses the same instance from above
+
+console.log(number); // 1
+console.log(number2); // 1
+console.log(number3); // 1
+```
+
+### Display every second
+
+```js
+
+```
