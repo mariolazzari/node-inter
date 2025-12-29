@@ -750,3 +750,131 @@ console.log(getTeam);
 ```
 
 ### Event loop
+
+The event loop is the core mechanism that allows Node.js to perform non-blocking, asynchronous operations using a single thread.
+
+```js
+console.log("Start");
+
+setTimeout(() => {
+  console.log("Timeout 2000ms");
+}, 2000);
+
+setTimeout(() => {
+  console.log("Timeout 0ms");
+}, 0);
+
+console.log("End");
+```
+
+#### What problem does it solve?
+
+JavaScript runs on a single thread, so it can only execute one thing at a time.
+The event loop lets Node.js handle many concurrent operations (I/O, timers, network requests) without blocking that single thread.
+
+High-level idea
+
+- Node.js starts executing your script.
+- When it encounters an asynchronous operation, it delegates it to the system (OS, thread pool, or kernel).
+- Once the operation finishes, its callback (or promise resolution) is placed in a queue.
+
+The event loop continuously checks these queues and executes callbacks when the call stack is empty.
+
+Main components
+
+1. Call Stack
+
+- Executes synchronous JavaScript code.
+- If the stack is busy, nothing else runs.
+
+2. Node APIs / libuv
+
+Handles async work like:
+
+- File system operations
+- Network I/O
+- Timers
+
+Implemented using libuv, a C library.
+
+3. Callback Queues
+
+Different types of async callbacks go into different queues.
+
+Event loop phases (important)
+
+The event loop runs in phases, in this order:
+
+1. Timers phase
+
+Executes callbacks from:
+
+- setTimeout
+- setInterval
+
+2. Pending callbacks
+
+Executes I/O callbacks deferred from the previous loop iteration.
+
+3. Idle, prepare
+
+Internal use only.
+
+4. Poll phase
+
+Retrieves new I/O events (e.g., incoming network data).
+
+- Executes I/O callbacks.
+- Can block here waiting for I/O if no timers are ready.
+
+5. Check phase
+
+Executes callbacks from:
+
+- setImmediate
+
+6. Close callbacks
+
+Handles cleanup like: socket.on('close')
+
+### Micro vs Macro task queue
+
+In JavaScript (including Node.js and browsers), microtasks and macrotasks are two categories of asynchronous work that differ in priority and when they run in the event loop.
+
+```js
+console.log("start");
+
+setTimeout(() => console.log("timeout"), 0);
+
+Promise.resolve().then(() => console.log("promise"));
+
+process.nextTick(() => console.log("nextTick"));
+
+console.log("end");
+```
+
+#### Macrotasks
+
+- setTimeout
+- setInterval
+- setImmediate (Node.js)
+- I/O callbacks (network, filesystem)
+- UI rendering events (browser)
+
+##### When do macrotasks run?
+
+- One macrotask is taken from the queue per event loop iteration
+- After it finishes, microtasks run before the next macrotask
+
+#### Microtasks
+
+- Promise.then / catch / finally
+- async / await
+- queueMicrotask
+- process.nextTick (Node.js – even higher priority)
+
+##### When do microtasks run?
+
+- Immediately after the current JavaScript execution
+- Before any macrotask
+- Drained completely before the event loop continues
