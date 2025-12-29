@@ -610,5 +610,143 @@ console.log(number3); // 1
 ### Display every second
 
 ```js
+const clock = () => {
+  const today = new Date();
+  const hh = today.getHours();
+  const mm = today.getMinutes();
+  const ss = today.getSeconds();
+  console.log(`${hh}:${mm}:${ss}`);
+};
 
+setInterval(clock, 1000);
 ```
+
+### Code assignement
+
+```js
+class Product {
+  total;
+  price;
+
+  constructor(total, price) {
+    this.total = total;
+    this.price = price;
+  }
+
+  get stock() {
+    if (this.total <= 0) {
+      return "Not in Stock";
+    }
+    return "In Stock";
+  }
+
+  sell() {
+    this.total--;
+  }
+}
+```
+
+### Prototype
+
+```js
+function User(age, name) {
+  this.age = age;
+  this.name = name;
+}
+
+User.prototype.getDetails = function () {
+  return `${this.age}, ${this.name}`;
+};
+
+const tom = new User(30, "Tom");
+const details = tom.getDetails();
+console.log(details); // 30, Tom
+```
+
+## Intermediate questions
+
+### Protocol
+
+#### TCP (Transmission Control Protocol)
+
+##### What it is
+
+Connection-oriented and reliable.
+
+##### Key characteristics:
+
+- Establishes a connection (3-way handshake)
+- Guarantees delivery
+- Preserves packet order
+- Error checking and retransmission
+- Flow & congestion control
+- Slower, more overhead
+
+##### When to use TCP:
+
+- Web browsing (HTTP/HTTPS)
+- Email (SMTP, IMAP, POP3)
+- File transfers (FTP, SFTP)
+- Any application where accuracy matters more than speed
+
+Example:
+
+If you download a file, TCP ensures every byte arrives correctly and in order.
+
+#### UDP (User Datagram Protocol)
+
+##### What it is
+
+Connectionless and best-effort.
+
+##### Key characteristics:
+
+- No connection setup
+- No delivery guarantee
+- No ordering guarantee
+- No retransmission
+- Minimal overhead
+- Faster, lower latency
+
+##### When to use UDP
+
+- Live streaming
+- Online gaming
+- Voice/video calls (VoIP)
+- DNS queries
+- Real-time systems where speed matters more than perfect accuracy
+
+Example:
+
+In a video call, losing a few packets is better than waiting for retransmissions that cause lag.
+
+### Circular dependency issue
+
+Circular dependencies in Node.js happen when two (or more) modules require/import each other, either directly or indirectly.
+This can lead to undefined values, partially initialized exports, or subtle runtime bugs.
+
+```js
+const getUser = require("./User");
+console.log("from team");
+console.log(getUser); //If User.js is run we get: Accessing non-existent property 'Symbol(nodejs.util.inspect.custom)' of module exports inside circular dependency
+
+function getTeam() {
+  return "coders";
+}
+module.exports = getTeam;
+```
+
+```js
+module.exports = getUser;
+
+const getTeam = require("./Team");
+console.log("from user");
+
+function getUser() {
+  return "Adam";
+}
+
+console.log(getTeam);
+```
+
+### Event loop
