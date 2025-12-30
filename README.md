@@ -926,6 +926,135 @@ server.listen(5000, "127.0.0.1", () => {
 
 ### Process
 
-```js
+#### Child process
 
+```js
+// app.js
+const app = require("express")();
+const { fork } = require("child_process");
+
+app.get("/heavy", (_req, res) => {
+  //spawn a new Node.js process/instance
+  var child = fork(__dirname + "/count.js");
+  //once the child operation is finished send the data to user
+  child.on("message", myCount => {
+    console.log("Sending /heavy result");
+    res.send(myCount);
+  });
+  //send message to the child signaling that it needs to start the heavy operration
+  child.send("START_COUNT");
+});
+
+app.get("/light", (req, res) => {
+  res.send("Hello from light ");
+});
+
+app.listen(8000, () => console.log("Server running on port: 8000"));
+```
+
+```js
+// count.js
+process.on("message", msg => {
+  let counter = 0;
+  console.log(msg);
+  while (counter < 9000000000) {
+    counter++;
+  }
+  process.send(`${counter} finished`);
+});
+```
+
+#### Cluster
+
+```js
+const cluster = require("cluster");
+const os = require("os");
+const numCPUs = os.cpus().length;
+
+//When we start the app,it will start a cluster of processes, after that,anytime someone makes a request to the server,the parent process will redirect the request to a child process
+if (cluster.isPrimary) {
+  console.log(`Primary ${process.pid} is running`);
+
+  for (let i = 0; i < 6; i++) {
+    //spawns child processes/instance
+    cluster.fork();
+  }
+
+  cluster.on("online", (worker, code, signal) => {
+    console.log(`worker ${worker.process.pid} online`);
+  });
+
+  cluster.on("exit", (worker, code, signal) => {
+    console.log(`worker ${worker.process.pid} died`);
+    console.log("Starting a new order");
+    cluster.fork();
+  });
+} else {
+  //workers will share the same TCP connection on the same port
+  const express = require("express");
+  const app = express();
+
+  app.get("/heavy", (req, res) => {
+    let counter = 0;
+    while (counter < 90000000) {
+      counter++;
+    }
+    console.log(`Heavy request ${process.pid}`);
+    res.send(`${process.pid} completed,counter is:${counter}`);
+  });
+
+  app.get("/light", (req, res) => {
+    res.send("From light");
+  });
+  app.listen(6000, () => {
+    console.log("listening to port 6000");
+  });
+}
+```
+
+### Worker thread
+
+```js
+// app.js
+const express = require("express");
+const { Worker, workerData } = require("worker_threads");
+
+const app = express();
+
+app.get("/heavy", (req, res) => {
+  let worker = new Worker("./worker.js", { workerData: "hello" });
+
+  worker.on("message", data => {
+    console.log(data);
+    console.log(worker.threadId);
+    res.json({ data });
+  });
+
+  worker.on("error", err => {
+    res.send("something is wrong");
+    throw err;
+  });
+});
+
+app.get("/light", (req, res) => {
+  res.send("From light");
+});
+
+app.listen(6000, () => console.log("Listening to port 6000"));
+```
+
+```js
+// worker.js
+const { parentPort, workerData } = require("worker_threads");
+
+let counter = 0;
+
+//the workerData we get from app.js
+console.log(workerData);
+
+for (let i = 0; i < 10000000000; i++) {
+  counter++;
+}
+
+parentPort.postMessage(counter);
 ```
