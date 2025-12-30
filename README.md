@@ -967,6 +967,7 @@ process.on("message", msg => {
 #### Cluster
 
 ```js
+// app.js
 const cluster = require("cluster");
 const os = require("os");
 const numCPUs = os.cpus().length;
@@ -1058,3 +1059,72 @@ for (let i = 0; i < 10000000000; i++) {
 
 parentPort.postMessage(counter);
 ```
+
+### Pool
+
+```js
+const crypto = require("crypto");
+const execTime = require("execution-time")();
+
+function callCrypto() {
+  execTime.start();
+  crypto.pbkdf2("someSecret", "salt", 500000, 512, "sha512", (_err, key) => {
+    console.log(key);
+    console.log(execTime.stop());
+    console.log("-------------------");
+  });
+}
+
+callCrypto();
+callCrypto();
+callCrypto();
+callCrypto();
+callCrypto();
+callCrypto();
+```
+
+```json
+{
+  "name": "crypto",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "SET UV_THREADPOOL_SIZE=6 && node app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "execution-time": "^1.4.1"
+  }
+}
+```
+
+### Authentication
+
+- User logs in with credentials (e.g., username/password)
+- Server verifies credentials
+- Server creates a session and stores user info server-side
+- Server sends a session ID to the browser in a cookie
+- Browser sends the cookie on every request
+- Server uses the session ID to identify the user
+
+### Mono vs Micro
+
+#### Monolithic Architecture
+
+A single deployable application where:
+
+- UI, business logic, and data access live in one codebase
+- All modules run in the same process
+- One database (usually)
+
+#### Microservices Architecture
+
+An application split into multiple independent services, each:
+
+- Owns a specific business capability
+- Runs in its own process
+- Has its own database
+- Communicates over HTTP / gRPC / messaging
