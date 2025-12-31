@@ -1242,3 +1242,13 @@ The Singleton Pattern is a creational design pattern that ensures a class has on
 - Private constructor – prevents direct instantiation.
 - Static instance – holds the single object.
 - Public access method – returns the same instance every time.
+
+### MVC
+
+The MVC Pattern (Model–View–Controller) is an architectural design pattern that separates an application into three interconnected components to improve maintainability, scalability, and testability.
+
+- Model: Represents the business logic and data
+- View: Represents the user interface
+- Acts as an intermediary between Model and View
+
+### In memory
