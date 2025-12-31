@@ -1224,3 +1224,13 @@ Focus on communication and responsibility between objects.
 - Visitor – Adds operations without modifying objects
 
 Used to manage complex workflows and interactions.
+
+### Factory pattern
+
+The Factory Design Pattern is a creational design pattern that provides an interface for creating objects without specifying the exact class of object that will be created.
+Instead of calling constructors directly, you delegate object creation to a factory.
+
+- Object creation logic is complex
+- You want to decouple object creation from usage
+- You expect to add new types in the future
+- You want to follow Open/Closed Principle (open for extension, closed for modification)
