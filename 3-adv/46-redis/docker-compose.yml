@@ -1,0 +1,11 @@
+version: "3.8"
+#If I do not specify this name below,docker uses the name of the folder where this docker-compose.yml file is. so this is the custom name for docker compose project
+name: redis-example
+services:
+  redisservice:
+    #This is the name of the container, If you don't specify this container_name below, docker will name your container as redis-example-redisservice-1 which isn't ideal so let's give it a name like "myredis", myredis container is an instance of the redis server running in a docker container
+    container_name: myredis
+    #When you run docker-compose up, Docker compose will create a container from the "redis" image and give it the name "myredis" , redis iamge is an official Redis docker image contains the redis server, we use this image to run redis server in a container
+    image: redis:7.0.8
+    ports:
+      - "6379:6379"
