@@ -1234,3 +1234,11 @@ Instead of calling constructors directly, you delegate object creation to a fact
 - You want to decouple object creation from usage
 - You expect to add new types in the future
 - You want to follow Open/Closed Principle (open for extension, closed for modification)
+
+### Singleton pattern
+
+The Singleton Pattern is a creational design pattern that ensures a class has only one instance and provides a global access point to that instance.
+
+- Private constructor – prevents direct instantiation.
+- Static instance – holds the single object.
+- Public access method – returns the same instance every time.
