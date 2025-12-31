@@ -1128,3 +1128,99 @@ An application split into multiple independent services, each:
 - Runs in its own process
 - Has its own database
 - Communicates over HTTP / gRPC / messaging
+
+## Advanced questions
+
+### Observer pattern
+
+The Observer Pattern is a behavioral design pattern used when an object (the subject) needs to automatically notify multiple other objects (observers) when its state changes.
+
+```js
+const { EventEmitter } = require("events");
+
+class Category extends EventEmitter {
+  constructor(category_name) {
+    super();
+    this.category_name = category_name;
+    this.discount_amount = 0;
+    this.observers = [];
+  }
+
+  subscribe(observer) {
+    this.observers.push(observer);
+  }
+
+  unsubscribe(observer) {
+    this.observers = this.observers.filter(obs => obs !== observer);
+  }
+
+  discount(discount_amount) {
+    this.discount_amount = discount_amount;
+    // create emitter called discount and send message to observers
+    this.observers.forEach(observer => {
+      this.emit(
+        "discount",
+        `${observer.client_name} there is ${this.discount_amount}% discount on ${this.category_name}`
+      );
+    });
+  }
+
+  noDiscount() {
+    // remove the observer from subscribers
+    this.observers.forEach(observer => {
+      this.emit(
+        "nodiscount",
+        `${observer.client_name} discount on ${this.category_name} is over`
+      );
+    });
+  }
+}
+```
+
+### Pattern groups
+
+Design patterns are commonly grouped into three main types based on the kind of problem they solve
+
+#### Creational Patterns
+
+Focus on object creation, making systems independent of how objects are created, composed, and represented.
+
+- Singleton – Ensures only one instance of a class exists
+- Factory Method – Creates objects without specifying the exact class
+- Abstract Factory – Creates families of related objects
+- Builder – Constructs complex objects step by step
+- Prototype – Creates new objects by cloning existing ones
+
+Used when object creation logic is complex or needs flexibility.
+
+#### Structural Patterns
+
+Deal with object composition and relationships between classes or objects.
+
+- Adapter – Converts one interface into another
+- Bridge – Separates abstraction from implementation
+- Composite – Treats individual objects and compositions uniformly
+- Decorator – Adds behavior dynamically
+- Facade – Provides a simplified interface to a complex system
+- Flyweight – Reduces memory usage by sharing objects
+- Proxy – Controls access to another object
+
+Used to simplify structure and improve maintainability.
+
+#### Behavioral Patterns
+
+Focus on communication and responsibility between objects.
+
+- Chain of Responsibility – Passes requests along a chain
+- Command – Encapsulates requests as objects
+- Interpreter – Defines grammar and interprets sentences
+- Iterator – Traverses collections uniformly
+- Mediator – Centralizes communication between objects
+- Memento – Captures and restores object state
+- Observer – Notifies dependent objects of changes
+- State – Changes behavior based on internal state
+- Strategy – Selects algorithms at runtime
+- Template Method – Defines algorithm skeleton
+- Visitor – Adds operations without modifying objects
+
+Used to manage complex workflows and interactions.
