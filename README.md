@@ -1366,3 +1366,73 @@ class OrderService {
 ## AWS
 
 ### Serverless
+
+Serverless usually refers to a cloud computing model where you run code without managing servers. The servers still exist—but the cloud provider handles provisioning, scaling, patching, and availability for you.
+
+- You write code, deploy it, and define when it runs
+- The cloud provider runs it on demand
+- You pay only for execution time, not idle servers
+- Automatic scaling (from zero to millions of requests)
+
+#### Common serverless components
+
+Functions as a Service (FaaS)
+
+- AWS Lambda
+- Azure Functions
+- Google Cloud Functions
+
+#### Managed backend services (often considered part of serverless)
+
+- Databases: DynamoDB, Firestore
+- Auth: Cognito, Firebase Auth
+- Storage: S3, Cloud Storage
+- APIs: API Gateway
+
+#### Typical use cases
+
+- REST or GraphQL APIs
+- Background jobs & cron tasks
+- Event processing (file uploads, queues, streams)
+- Webhooks
+- Microservices
+
+#### Pros
+
+- No server management
+- Scales automatically
+- Cost-efficient for variable traffic
+- Faster development & deployment
+
+#### Cons
+
+- Cold starts (latency on first run)
+- Vendor lock-in risk
+- Harder local debugging
+- Not ideal for long-running or stateful processes
+
+```js
+export const handler = async event => {
+  if (event.path === "/api/product") {
+    const response = {
+      statusCode: 200,
+      body: JSON.stringify({
+        prdName: "monitor",
+        price: "300$",
+      }),
+    };
+    return response;
+  } else {
+    // Return a 404 error if the request path is not recognized
+    const response = {
+      statusCode: 404,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message: "Not Found" }),
+    };
+
+    return response;
+  }
+};
+```
