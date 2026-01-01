@@ -1303,3 +1303,66 @@ app.get("/users", async (req, res) => {
 
 app.listen(5000, () => console.log("Listening"));
 ```
+
+## Dependency injection
+
+### MongoDB
+
+[MongoDB](https://www.mongodb.com/)
+
+### Service repository pattern
+
+Dependency Injection is a technique where an object receives its dependencies from the outside instead of creating them itself.
+
+```ts
+class OrderService {
+    private readonly OrderRepository repo;
+
+    public OrderService(OrderRepository repo) {
+        this.repo = repo;
+    }
+}
+```
+
+- Loose coupling
+- Easier testing (mock dependencies)
+- Easier to change implementations
+- Better separation of concerns
+
+#### Repository Pattern
+
+The Repository pattern abstracts data access logic and presents a collection-like interface to the domain or service layer.
+
+```ts
+interface OrderRepository {
+  findById: (id: string) => Order;
+  save: (order: Order) => void;
+}
+```
+
+- Encapsulate database logic
+- Avoid leaking SQL/ORM details
+- Make persistence interchangeable
+
+#### Service pattern
+
+A Service contains business logic and coordinates repositories and other services.
+
+```ts
+class OrderService {
+  private readonly repo: OrderRepository;
+
+  public OrderService(repo: OrderRepository) {
+    this.repo = repo;
+  }
+
+  public placeOrder(order: Order): void {
+    // business rules
+    repo.save(order);
+  }
+}
+```
+
+## AWS
+
+### Serverless
